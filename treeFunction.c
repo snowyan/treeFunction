@@ -78,7 +78,7 @@ void traverseInorder(NodePtr curr)
         return;
     }
     traverseInorder(curr->left);
-    printf("%d %s %s\n", curr->key, curr->left, curr->right);
+    printf("%d \n", curr->key);
     traverseInorder(curr->right);
 }
 /*
@@ -110,6 +110,16 @@ void traversePostorder(NodePtr curr)
     printf("%d \n", curr->key);
 }
 
+int getRightMin(NodePtr curr)
+{
+    NodePtr temp = curr;
+    while (temp->left != NULL)
+    {
+        temp = temp->left;
+    }
+    return temp->key;
+}
+
 NodePtr removeNode(NodePtr curr, int val)
 {
     if (curr == NULL)
@@ -135,7 +145,14 @@ NodePtr removeNode(NodePtr curr, int val)
             free(curr);
             return temp;
         }
+        else
+        {
+            int rightMin = getRightMin(curr->right);
+            curr->key = rightMin;
+            curr->right = removeNode(curr->right, rightMin);
+        }
     }
+    return curr;
 }
 
 int main()
@@ -151,6 +168,9 @@ int main()
     insert(&curr, 16);
     insert(&curr, 25);
     traverseInorder(curr);
-    free(curr);
+
+    curr = removeNode(curr, 15);
+    traverseInorder(curr);
+
     return 0;
 }
